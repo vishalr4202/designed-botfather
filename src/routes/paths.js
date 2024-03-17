@@ -100,6 +100,7 @@ export const paths = {
   dashboard: {
     root: ROOTS.DASHBOARD,
     set:`${ROOTS.DASHBOARD}/set`,
+    setdetails: (id) => `${ROOTS.DASHBOARD}/set/${id}`,
     mail: `${ROOTS.DASHBOARD}/mail`,
     chat: `${ROOTS.DASHBOARD}/chat`,
     blank: `${ROOTS.DASHBOARD}/blank`,

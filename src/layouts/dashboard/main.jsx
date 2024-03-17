@@ -13,11 +13,11 @@ import { useAuthContext } from 'src/auth/hooks';
 const SPACING = 8;
 
 export default function Main({ children, sx, ...other }) {
-  
+
   const settings = useSettingsContext();
-  const {user} = useAuthContext();
+  const { user } = useAuthContext();
   const lgUp = useResponsive('up', 'lg');
-   console.log(user,"cont")
+  console.log(user, "cont")
   const isNavHorizontal = settings.themeLayout === 'horizontal';
 
   const isNavMini = settings.themeLayout === 'mini';

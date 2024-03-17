@@ -23,7 +23,7 @@ import { useAuthContext } from 'src/auth/hooks';
 
 export default function NavVertical({ openNav, onCloseNav }) {
   // const { user } = useMockedUser();
-  const {user} = useAuthContext();
+  const { user } = useAuthContext();
   const pathname = usePathname();
 
   const lgUp = useResponsive('up', 'lg');
@@ -59,7 +59,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <NavUpgrade />
+      {/* <NavUpgrade /> */}
     </Scrollbar>
   );
 

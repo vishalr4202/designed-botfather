@@ -1,0 +1,15 @@
+.add_more_icon{
+    color:green;
+    cursor: pointer;
+    top: 15px;
+    position: relative;
+}
+.remove_more_icon{
+    color:red;
+    cursor: pointer;
+    top: 15px;
+    position: relative;
+}
+.orderButtonDiv{
+    margin-top:10px
+}

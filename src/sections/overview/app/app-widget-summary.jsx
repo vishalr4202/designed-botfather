@@ -13,7 +13,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function AppWidgetSummary({ title, percent, total, chart, sx, setView, users, primary, login, ...other }) {
+export default function AppWidgetSummary({ title, percent, total, chart, sx, setView, users, primary, login, view, ...other }) {
   const theme = useTheme();
 
   // const {
@@ -27,8 +27,6 @@ export default function AppWidgetSummary({ title, percent, total, chart, sx, set
     series = chart?.series;
     options = chart?.options;
   }
-
-  console.log(theme.palette.primary.light)
 
   const chartOptions = {
     colors: colors?.map((colr) => colr[1]),
@@ -107,7 +105,7 @@ export default function AppWidgetSummary({ title, percent, total, chart, sx, set
       /> : null}
       {setView ?
         <Box sx={{ flexGrow: 1 }}>
-          <Stack direction="row" alignItems="center" justifyContent="start" sx={{ gap: '60%' }}>
+          <Stack direction="row" alignItems="center" justifyContent="start" sx={{ gap: '45%' }}>
             <Typography component="div" variant="h6">
               Name: {title}
             </Typography>
@@ -118,15 +116,19 @@ export default function AppWidgetSummary({ title, percent, total, chart, sx, set
           <Typography component="div" variant="subtitle1">Primary: {primary}</Typography>
 
           <Stack direction="row" alignItems="center" sx={{ mt: 2, mb: 1, gap: '15px' }}>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={view}>
               View
             </Button>
-            <Button variant="contained" color="secondary" onClick={login}>
+            <Button variant="contained" color="secondary" onClick={view}>
+              Manage
+            </Button>
+            <Button variant="contained" color="error" onClick={login}>
               Login
             </Button>
-            <Button variant="contained" color="error" >
+            {/* <Button variant="contained" color="error" >
               Delete
-            </Button>
+            </Button> */}
+
           </Stack>
         </Box>
 

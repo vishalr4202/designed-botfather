@@ -14,9 +14,10 @@ export default function NavList({ data, depth, slotProps }) {
   const pathname = usePathname();
 
   const active = useActiveLink(data.path, !!data.children);
-
+  // console.log(pathname.slice(pathname.lastIndexOf('/') + 1))
   const [openMenu, setOpenMenu] = useState(active);
-
+  const path = (data.path.slice((data.path.lastIndexOf('/') + 1)))
+  console.log(path, "path")
   useEffect(() => {
     if (!active) {
       handleCloseMenu();

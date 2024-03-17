@@ -11,6 +11,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 // OVERVIEW
 const IndexPage = lazy(() => import('src/pages/dashboard/app'));
 const SetPage = lazy(() => import('src/sections/overview/app/setView/setView'))
+const ManageSet = lazy(() => import('src/sections/overview/app/ManageSet/ManageSet'))
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
@@ -87,19 +88,28 @@ export const dashboardRoutes = [
       // { path: 'booking', element: <OverviewBookingPage /> },
       // { path: 'file', element: <OverviewFilePage /> },
       // <UserListPage /> 
-      {path:'set',element:<SetPage />},
+      // { path: 'set', element: <PrivateRoute element={<SetPage />} /> },
+      // { path: 'set/:id', element: <PrivateRoute element={<ManageSet />} /> },
       {
-        path: 'user',
+        path: 'set',
         children: [
-          { element: <UserProfilePage />, index: true },
-          { path: 'profile', element: <UserProfilePage /> },
-          { path: 'cards', element: <UserCardsPage /> },
-          { path: 'list', element:<PrivateRoute element={<UserListPage />} /> },
-          { path: 'new', element: <UserCreatePage /> },
-          { path: ':id/edit', element: <UserEditPage /> },
-          { path: 'account', element: <UserAccountPage /> },
+          { element: <PrivateRoute element={<SetPage />} />, index: true },
+          { path: ':id', element: <PrivateRoute element={<ManageSet />} /> },
         ],
       },
+      { path: 'user', element: <PrivateRoute element={<UserListPage />} /> },
+      // {
+      //   path: 'user',
+      //   children: [
+      //     { element: <UserListPage />, index: true },
+      //     { path: 'profile', element: <UserProfilePage /> },
+      //     { path: 'cards', element: <UserCardsPage /> },
+      //     { path: 'list', element: <PrivateRoute element={<UserListPage />} /> },
+      //     { path: 'new', element: <UserCreatePage /> },
+      //     { path: ':id/edit', element: <UserEditPage /> },
+      //     { path: 'account', element: <UserAccountPage /> },
+      //   ],
+      // },
       // {
       //   path: 'product',
       //   children: [
@@ -164,7 +174,7 @@ export const dashboardRoutes = [
       // { path: 'calendar', element: <CalendarPage /> },
       // { path: 'kanban', element: <KanbanPage /> },
       { path: 'permission', element: <PermissionDeniedPage /> },
-      { path: 'blank', element: <BlankPage /> },
+      // { path: 'blank', element: <BlankPage /> },
     ],
   },
 ];

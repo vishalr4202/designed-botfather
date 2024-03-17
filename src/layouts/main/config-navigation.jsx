@@ -23,12 +23,13 @@ export const navConfig = [
   //   path: paths.about
   // },
   {
-    title:'Contact',
+    title: 'Contact',
     icon: <Iconify icon="solar:home-2-bold-duotone" />,
     path: paths.contact
   },
   { title: 'FAQs', path: paths.faqs },
   { title: 'Pricing', path: paths.pricing },
+  { title: 'Login', path: paths.auth.jwt.login },
   // {
   //   title: 'Pages',
   //   path: '/pages',

@@ -27,7 +27,6 @@ export default memo(NavSectionMini);
 // ----------------------------------------------------------------------
 
 function Group({ items, slotProps }) {
-  console.log(items,"Df")
   return (
     <>
       {items.map((list) => (

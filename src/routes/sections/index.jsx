@@ -45,6 +45,6 @@ export default function Router() {
     // ...componentsRoutes,
 
     // No match 404
-    { path: '*', element: <Navigate to="/404" replace /> },
+    // { path: '*', element: <Navigate to="/404" replace /> },
   ]);
 }
