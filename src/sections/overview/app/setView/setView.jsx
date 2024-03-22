@@ -82,13 +82,13 @@ export default function SetView() {
     const theme = useTheme();
 
     const settings = useSettingsContext();
-
+    console.log(settings)
     return (
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>
             <Grid container spacing={3}>
                 {state?.allSets?.message?.map((ele) => {
                     return (
-                        <Grid xs={12} md={3}>
+                        <Grid xs={12} md={settings?.themeLayout == 'mini' ? 3 : 3.5}>
                             <AppWidgetSummary
                                 title={ele?.name}
                                 users={ele?.email?.length}

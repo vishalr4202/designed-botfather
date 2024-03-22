@@ -32,12 +32,13 @@ export default function TableHeadCustom({
   onSort,
   onSelectAllRows,
   sx,
+  selectable
 }) {
   return (
     <TableHead >
       <TableRow sx={sx}>
-        {onSelectAllRows && (
-          <TableCell padding="checkbox"  sx={{ backgroundColor:'transparent' }}>
+        {onSelectAllRows && selectable && (
+          <TableCell padding="checkbox" sx={{ backgroundColor: 'transparent' }}>
             <Checkbox
               indeterminate={!!numSelected && numSelected < rowCount}
               checked={!!rowCount && numSelected === rowCount}
@@ -51,7 +52,7 @@ export default function TableHeadCustom({
             key={headCell.id}
             align={headCell.align || 'left'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ width: headCell.width, minWidth: headCell.minWidth,backgroundColor:'transparent' }}
+            sx={{ width: headCell.width, minWidth: headCell.minWidth, backgroundColor: 'transparent' }}
           >
             {onSort ? (
               <TableSortLabel

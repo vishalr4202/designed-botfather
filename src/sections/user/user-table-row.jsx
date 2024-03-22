@@ -21,8 +21,8 @@ import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow,index }) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber,updated } = row;
+export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, index, selectable, type }) {
+  const { name, avatarUrl, company, role, status, email, phoneNumber, updated } = row;
 
   const confirm = useBoolean();
 
@@ -32,9 +32,11 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
+        {selectable && (
+          <TableCell padding="checkbox">
+            <Checkbox checked={selected} onClick={onSelectRow} />
+          </TableCell>
+        )}
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={name} src={_mock.image.avatar(index)} sx={{ mr: 2 }} />
@@ -69,18 +71,29 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
             {status}
           </Label>
         </TableCell> */}
-
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          {/* <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip> */}
-
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+        {/* <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+          <Button>Close</Button>
+        </TableCell> */}
+        {type == 'close' ?
+          <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+            <Button color="error" variant="outlined">Close</Button>
+          </TableCell>
+          :
+          <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+            {/* <Tooltip title="Quick Edit" placement="top" arrow>
+          <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
+            <Iconify icon="solar:pen-bold" />
           </IconButton>
-        </TableCell>
+        </Tooltip> */}
+
+            <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </TableCell>
+
+        }
+
+
       </TableRow>
 
       {/* <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} /> */}
@@ -119,7 +132,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={()=>{onDeleteRow(),confirm.onFalse()}}>
+          <Button variant="contained" color="error" onClick={() => { onDeleteRow(), confirm.onFalse() }}>
             Delete
           </Button>
         }

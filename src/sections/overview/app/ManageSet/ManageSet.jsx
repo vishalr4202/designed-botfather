@@ -27,7 +27,15 @@ import FS_Instruments from 'src/utils/FSInstruments/fsInstruments.json';
 import Switches from 'src/components/Switch/Switch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import SetPositions from '../set-positions';
 import './manageset.css'
+import Chip from 'src/components/Chip/Chip'
+import ShortStraddle from 'src/components/ShortStraddle/ShortStraddle';
+import ShortStrangle from 'src/components/ShortStrangle/ShortStrangle';
+import LongStraddle from 'src/components/LongStraddle/LongStraddle';
+import LongStrangle from 'src/components/LongStrangle/LongStrangle';
+import BullSpread from 'src/components/BullSpread/BullSpread';
+import BearSpread from 'src/components/BearSpread/BearSpread';
 export default function ManageSet(props) {
     const router = useRouter();
     const params = useParams()
@@ -358,6 +366,154 @@ export default function ManageSet(props) {
         setMultiLegged([{ derivative: false, optionType: false, instruments: FS_Instruments.filter((ele) => ele?.OptionType == "XX").map((ele) => ele?.TradingSymbol), selectedInstrument: "", selectedLots: 0, orderType: '', BuyorSell: false, limitPrice: '', lotSize: [] }])
     }
 
+    const getPrimarySetPositions = () => {
+        // if (props?.location?.state?.params?.primary) {
+
+        // }
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.PRIMARY_SET_POSITION,
+                    reqObj: { email: location?.state?.params?.primary }
+                },
+                storeKey: STORE_KEYS.PRIMARY_SET_POSITION,
+                uniqueScreenIdentifier: {
+                    setUserPos: true
+                }
+            })
+        );
+    };
+
+    useEffect(() => {
+        const x = setInterval(() => {
+            getPrimarySetPositions()
+        }, 2000)
+        return () => {
+            clearInterval(x)
+        }
+    }, [])
+
+    //  Straddle Strangle Strategies Logic
+    const [selectedStrategy, setSelectedStrategy] = useState(0)
+    const handleClickChip = (chipToDelete) => {
+        console.log(chipToDelete)
+        setSelectedStrategy(chipToDelete?.key)
+    };
+
+
+    const placeStrategy = (e, type) => {
+        console.log(e, "ashj")
+        const newObj = { ...e, name: params?.id }
+        if (type == "shortStraddle") {
+            placeShortStraddle(newObj)
+        }
+        if (type == "shortStrangle") {
+            placeShortStrangle(newObj)
+        }
+        if (type == "longStraddle") {
+            placeLongStraddle(newObj)
+        }
+        if (type == "longStrangle") {
+            placeLongStrangle(newObj)
+        }
+        if (type == "bullSpread") {
+            placeBullSpread(newObj)
+        }
+        if (type == "bearSpread") {
+            placeBearSpread(newObj)
+        }
+    }
+    const placeShortStraddle = (e) => {
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.SET_SHORT_STRADDLE,
+                    reqObj: e
+                },
+                storeKey: STORE_KEYS.SET_SHORT_STRADDLE,
+                uniqueScreenIdentifier: {
+                    setStraddle: true
+                }
+            })
+        );
+    };
+    const placeShortStrangle = (e) => {
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.SET_SHORT_STRANGLE,
+                    reqObj: e
+                },
+                storeKey: STORE_KEYS.SET_SHORT_STRANGLE,
+                // uniqueScreenIdentifier: {
+                //     apiKeyRecd: true
+                // }
+            })
+        );
+    };
+    const placeLongStraddle = (e) => {
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.SET_LONG_STRADDLE,
+                    reqObj: e
+                },
+                storeKey: STORE_KEYS.SET_LONG_STRADDLE,
+                // uniqueScreenIdentifier: {
+                //     apiKeyRecd: true
+                // }
+            })
+        );
+    };
+    const placeLongStrangle = (e) => {
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.SET_LONG_STRANGLE,
+                    reqObj: e
+                },
+                storeKey: STORE_KEYS.SET_LONG_STRANGLE,
+                // uniqueScreenIdentifier: {
+                //     apiKeyRecd: true
+                // }
+            })
+        );
+    };
+    const placeBullSpread = (e) => {
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.SET_BULL_CALL,
+                    reqObj: e
+                },
+                storeKey: STORE_KEYS.SET_BULL_CALL,
+                // uniqueScreenIdentifier: {
+                //     apiKeyRecd: true
+                // }
+            })
+        );
+    };
+    const placeBearSpread = (e) => {
+        dispatch(
+            executeACGAction({
+                payload: {
+                    requestType: 'POST',
+                    urlPath: ACTION_CODES.SET_BEAR_PUT,
+                    reqObj: e
+                },
+                storeKey: STORE_KEYS.SET_BEAR_PUT,
+                // uniqueScreenIdentifier: {
+                //     apiKeyRecd: true
+                // }
+            })
+        );
+    };
     return (
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>
             <SetToolbar
@@ -403,7 +559,7 @@ export default function ManageSet(props) {
             </div>
             {state.primaryUserDetail?.message ? <Chart symbol={chartToken == undefined ? '86145' : chartToken} fsGetUserKeys={state?.primaryUserDetail?.message} theme={settings?.themeMode} layout={settings.themeLayout} width="100%" /> : null}
 
-            <Card style={{ padding: '15px', overflow: 'visible', marginTop: '10px' }}>
+            <Card style={{ padding: '15px', overflow: 'visible', marginTop: '10px', marginBottom: '-8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: '0px', marginLeft: '7px' }}>
                     <div style={{ flex: '80%' }}>
                         <div className="headinglabel">Place Orders</div>
@@ -431,7 +587,7 @@ export default function ManageSet(props) {
 
                                 {ele?.instruments ? <Autocompletes data={instr[index]} change={(e) => changeLegValues(e, index, 'selectedInstr')} option={ele?.derivative} style={{ width: '270px' }} value={ele?.selectedInstrument} /> : <h6 style={{ marginTop: '17px' }}>No Instruments data, please login to your broker</h6>}
                                 {ele?.instruments ? <Autocompletes data={lots[index]} type="numbers" change={(e) => changeLegValues(e, index, 'selectedLots')} value={ele?.selectedLots} style={{ width: '103px' }} /> : null}
-                                {ele?.instruments ? <Autocompletes data={['Market', 'Limit']} orderType={true} change={(e) => changeLegValues(e, index, 'orderType')} type="numbers" style={{ width: '160px' }} value={ele?.orderType} /> : null}
+                                {ele?.instruments ? <Autocompletes data={['Market', 'Limit']} orderType={true} change={(e) => changeLegValues(e, index, 'orderType')} type="numbers" style={{ width: '160px', zIndex: '10 !important' }} value={ele?.orderType} /> : null}
                                 {ele?.orderType == 'Limit' ? <TextField label={"Price"} variant="outlined" onChange={(e) => changeLegValues(e, index, 'limitPrice')} type="number" value={ele?.limitPrice} style={{ width: '120px' }} /> : null}
 
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -469,20 +625,22 @@ export default function ManageSet(props) {
                     })}
                 </div> :
                     <div>
-                        {/* <Chip click={handleClickChip} active={selectedStrategy} />
-                            {isStrategy ?
-                                <div>
-                                    {selectedStrategy == 0 ? <ShortStraddle click={(e: any) => placeStrategy(e, "shortStraddle")} /> : null}
-                                    {selectedStrategy == 1 ? <ShortStrangle click={(e: any) => placeStrategy(e, "shortStrangle")} /> : null}
-                                    {selectedStrategy == 2 ? <LongStraddle click={(e: any) => placeStrategy(e, "longStraddle")} /> : null}
-                                    {selectedStrategy == 3 ? <LongStrangle click={(e: any) => placeStrategy(e, "longStrangle")} /> : null}
-                                    {selectedStrategy == 4 ? <BullSpread click={(e: any) => placeStrategy(e, "bullSpread")} /> : null}
-                                    {selectedStrategy == 5 ? <BearSpread click={(e: any) => placeStrategy(e, "bearSpread")} /> : null}
-                                </div>
-                                : null} */}
+                        <Chip click={handleClickChip} active={selectedStrategy} />
+                        {isStrategy ?
+                            <div>
+                                {selectedStrategy == 0 ? <ShortStraddle click={(e) => placeStrategy(e, "shortStraddle")} /> : null}
+                                {selectedStrategy == 1 ? <ShortStrangle click={(e) => placeStrategy(e, "shortStrangle")} /> : null}
+                                {selectedStrategy == 2 ? <LongStraddle click={(e) => placeStrategy(e, "longStraddle")} /> : null}
+                                {selectedStrategy == 3 ? <LongStrangle click={(e) => placeStrategy(e, "longStrangle")} /> : null}
+                                {selectedStrategy == 4 ? <BullSpread click={(e) => placeStrategy(e, "bullSpread")} /> : null}
+                                {selectedStrategy == 5 ? <BearSpread click={(e) => placeStrategy(e, "bearSpread")} /> : null}
+                            </div>
+                            : null}
                     </div>
                 }
             </Card>
+            <br />
+            <SetPositions data={state?.primarySetPositions?.message?.data?.filter((ele) => Math.abs(Number(ele?.netQuantity)) != 0)} type="positions" admin={true} />
         </Container>
     );
 }

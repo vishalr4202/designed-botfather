@@ -11,7 +11,7 @@ export default function UserListPage() {
         <title> Dashboard: User List</title>
       </Helmet>
 
-      <UserListView />
+      <UserListView selectable={true} />
     </>
   );
 }

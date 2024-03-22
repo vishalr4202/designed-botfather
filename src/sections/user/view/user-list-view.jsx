@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback,useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -75,7 +75,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function UserListView() {
+export default function UserListView({ selectable }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const table = useTable();
@@ -91,28 +91,28 @@ export default function UserListView() {
   const [filters, setFilters] = useState(defaultFilters);
   const dispatch = useDispatch();
   const acgStateSelector = createStructuredSelector({
-      acgSlice: acgSelector()
+    acgSlice: acgSelector()
   });
   const { acgSlice: state } = useSelector(acgStateSelector);
 
   useEffect(() => {
     dispatch(
-        executeACGAction({
-            payload: {
-                requestType: 'GET',
-                urlPath: ACTION_CODES.ADMIN_DASH
-            },
-            storeKey: STORE_KEYS.ADMIN_ALL_USERS
-        })
+      executeACGAction({
+        payload: {
+          requestType: 'GET',
+          urlPath: ACTION_CODES.ADMIN_DASH
+        },
+        storeKey: STORE_KEYS.ADMIN_ALL_USERS
+      })
     );
-}, [])
+  }, [])
 
-useEffect(() => {
-  if(state?.allusers?.message?.length>0){
+  useEffect(() => {
+    if (state?.allusers?.message?.length > 0) {
       setTableData(state?.allusers?.message)
-  }
-  
-}, [state?.allusers?.message])
+    }
+
+  }, [state?.allusers?.message])
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -157,7 +157,7 @@ useEffect(() => {
       setTableData(deleteRow);
       confirm.onFalse();
       table.onUpdatePageDeleteRow(dataInPage.length);
-     
+
     },
     [dataInPage.length, enqueueSnackbar, table, tableData]
   );
@@ -250,7 +250,7 @@ useEffect(() => {
             ))}
           </Tabs> */}
 
-          <UserTableToolbar
+          {/* <UserTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
@@ -267,7 +267,7 @@ useEffect(() => {
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
             />
-          )}
+          )} */}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
@@ -292,6 +292,7 @@ useEffect(() => {
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
+                  selectable={selectable}
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
@@ -315,8 +316,9 @@ useEffect(() => {
                       table.page * table.rowsPerPage,
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
-                    .map((row,index) => (
+                    .map((row, index) => (
                       <UserTableRow
+                        selectable={selectable}
                         key={row.id}
                         row={row}
                         index={index}

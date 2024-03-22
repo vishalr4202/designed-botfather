@@ -15,11 +15,11 @@ import { useRouter } from 'src/routes/hooks';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import { useAuthContext } from 'src/auth/hooks';
-
+import { useMemo } from 'react'
 import { varHover } from 'src/components/animate';
 import { useSnackbar } from 'src/components/snackbar';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { removeLocalStorage } from 'src/utilities/storageUtility';
 import { executeACGAction, reset, updateScreenIdentifiers } from 'src/store/slice';
@@ -48,8 +48,8 @@ export default function AccountPopover() {
   const dispatch = useDispatch();
   const acgStateSelector = createStructuredSelector({
     acgSlice: acgSelector()
-});
-const { acgSlice: state } = useSelector(acgStateSelector);
+  });
+  const { acgSlice: state } = useSelector(acgStateSelector);
   const router = useRouter();
 
   const { user } = useMockedUser();
@@ -69,11 +69,11 @@ const { acgSlice: state } = useSelector(acgStateSelector);
     //   console.error(error);
     //   enqueueSnackbar('Unable to logout!', { variant: 'error' });
     // }
-        removeLocalStorage('token');
-        removeLocalStorage('role');
-        dispatch(reset());
-        popover.onClose();
-        router.replace('/');
+    removeLocalStorage('token');
+    removeLocalStorage('role');
+    dispatch(reset());
+    popover.onClose();
+    router.replace('/');
   };
 
   const handleClickItem = (path) => {
@@ -81,7 +81,7 @@ const { acgSlice: state } = useSelector(acgStateSelector);
     router.push(path);
   };
 
-const num = Math.floor(Math.random()*40)
+  const num = useMemo(() => (Math.floor(Math.random() * 40)), [])
   return (
     <>
       <IconButton
@@ -101,7 +101,8 @@ const num = Math.floor(Math.random()*40)
         }}
       >
         <Avatar
-          src={num > 25 ? _mock.image.avatar(25) :_mock.image.avatar(num) }
+          src={num > 25 ? _mock.image.avatar(1) : _mock.image.avatar(num)}
+          // src={_mock.image.avatar(1)}
           alt={state?.loginData?.username}
           sx={{
             width: 36,
@@ -116,7 +117,7 @@ const num = Math.floor(Math.random()*40)
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {state?.loginData?.username}
+            {state?.loginData?.username?.charAt(0).toUpperCase() + state?.loginData?.username.slice(1, state?.loginData?.username?.length)}
           </Typography>
 
           {/* <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>

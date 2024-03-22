@@ -15,7 +15,7 @@ export default function ComboBox(props) {
             value={value}
             // sx={{ width: 270 }}
             options={data}
-            disablePortal
+            // disablePortal
             // getOptionLabel={type ?  (option: { tradingsymbol: any; }) => option : (option: { tradingsymbol: any; }) => option.tradingsymbol}
             style={style}
             renderInput={(params) => <TextField {...params} style={{ width: "100%", paddingLeft: '0px', paddingRight: '0px' }} label={type && !orderType ? "Lots" : orderType ? 'Order Type' : option ? "Strike Price" : price ? "Price" : expiry ? "Expiry" : hedge ? "Hedge" : putPrice ? "Put Price" : callPrice ? "Call Price" : callSell ? "Call Sell" : callBuy ? "Call Buy" : putBuy ? "Put Buy" : putSell ? "Put Sell" : Quantity ? 'Quantity' : "Instruments"} variant="outlined" />}

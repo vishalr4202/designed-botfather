@@ -11,13 +11,14 @@ export default function TablePaginationCustom({
   dense,
   onChangeDense,
   rowsPerPageOptions = [5, 10, 25],
+  hideShowDense,
   sx,
   ...other
 }) {
   return (
     <Box sx={{ position: 'relative', ...sx }}>
       <TablePagination
-        rowsPerPageOptions={rowsPerPageOptions}
+        rowsPerPageOptions={hideShowDense == true ? false : rowsPerPageOptions}
         component="div"
         {...other}
         sx={{
@@ -25,7 +26,7 @@ export default function TablePaginationCustom({
         }}
       />
 
-      {onChangeDense && (
+      {onChangeDense && !hideShowDense && (
         <FormControlLabel
           label="Dense"
           control={<Switch checked={dense} onChange={onChangeDense} />}

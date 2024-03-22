@@ -49,7 +49,7 @@ export default function Header({ onOpenNav }) {
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}
-      <Typography variant="body6">Welcome {data?.user?.username} !</Typography>
+      <Typography variant="body6">Welcome {data?.user?.username.charAt(0).toUpperCase() + data?.user?.username.slice(1, data?.user?.username?.length)} !</Typography>
       {/* <Searchbar /> */}
 
       <Stack

@@ -9,12 +9,11 @@ export default function useTable(props) {
 
   const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name');
 
-  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 5);
+  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 10);
 
   const [order, setOrder] = useState(props?.defaultOrder || 'asc');
 
   const [selected, setSelected] = useState(props?.defaultSelected || []);
-
   const onSort = useCallback(
     (id) => {
       const isAsc = orderBy === id && order === 'asc';
@@ -43,6 +42,7 @@ export default function useTable(props) {
   }, []);
 
   const onChangeDense = useCallback((event) => {
+    console.log('dshfkbs')
     setDense(event.target.checked);
   }, []);
 
