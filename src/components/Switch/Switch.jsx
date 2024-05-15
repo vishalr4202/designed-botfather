@@ -15,6 +15,7 @@ import Switch from '@mui/material/Switch';
 import { alpha, styled } from '@mui/material/styles';
 import { green, red } from '@mui/material/colors';
 import { Grid, Typography } from '@mui/material';
+import { useSettingsContext } from 'src/components/settings';
 
 const PurpleSwitch = styled(Switch)(({ theme }) => ({
     '& .MuiSwitch-switchBase.Mui-checked': {
@@ -40,8 +41,33 @@ const PurpleSwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
+const TrailSwitch = styled(Switch)(({ theme }) => ({
+    '& .MuiSwitch-switchBase.Mui-checked': {
+        color: green[300],
+        '&:hover': {
+            backgroundColor: alpha(green[600], theme.palette.action.hoverOpacity),
+        },
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: green[600],
+    },
+    '& .MuiSwitch-switchBase + .MuiSwitch-track': {
+        backgroundColor: red[500],
+        color: red[300],
+        opacity: 1,
+        border: 'none',
+    },
+    '& .MuiSwitch-switchBase': {
+        color: red[300],
+        '&:hover': {
+            backgroundColor: alpha(red[300], theme.palette.action.hoverOpacity),
+        },
+    },
+}));
+
 
 export default function Switches(props) {
+    const settings = useSettingsContext();
     const { type, change, checked } = props;
     const [state, setState] = React.useState({
         checkedA: false,
@@ -50,29 +76,39 @@ export default function Switches(props) {
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.checked });
     };
-
     return (
         <FormGroup style={{ width: 'fit-content' }}>
             <Typography component="div">
                 <Grid component="label" container alignItems="center" spacing={1}>
                     {type == 'strategies' ?
-                        <Grid item style={{ color: 'rgba(0, 0, 0, 0.54)' }}>{type === 'strategies' ? 'Manual' : null}</Grid>
+                        <Grid item style={{ color: settings?.themeMode == 'dark' ? 'white' : 'rgba(0, 0, 0, 0.54)' }}>{type === 'strategies' ? 'Manual' : null}</Grid>
                         : null
                     }
-                    <Grid item style={{ color: 'rgba(0, 0, 0, 0.54)' }}>{type === 'options' ? 'CE' : type == 'Futures' ? 'Futures' : type == "BUY/SELL" ? "Buy" : type == "LONG/SHORT" ? "Long" : null}</Grid>
+                    {type == 'Trailing' ?
+                        <Grid item style={{ color: settings?.themeMode == 'dark' ? 'white' : 'rgba(0, 0, 0, 0.54)' }}>{type === 'Trailing' ? 'Manual' : null}</Grid>
+                        : null
+                    }
+                    <Grid item style={{ color: settings?.themeMode == 'dark' ? 'white' : 'rgba(0, 0, 0, 0.54)' }}>{type === 'options' ? 'CE' : type == 'Futures' ? 'Futures' : type == "BUY/SELL" ? "Buy" : type == "LONG/SHORT" ? "Long" : null}</Grid>
                     <Grid item>
                         {type == 'strategies' ?
                             <FormControlLabel
                                 control={<PurpleSwitch checked={checked} onChange={change} name="checkedA" />}
                                 label={type == 'strategies' ? 'Strategies' : null}
-                                style={{ marginLeft: '-8px', color: 'rgba(0, 0, 0, 0.54)' }}
+                                style={{ marginLeft: '-8px', color: settings?.themeMode == 'dark' ? 'white' : 'rgba(0, 0, 0, 0.54)' }}
                             />
                             :
-                            <FormControlLabel
-                                control={<PurpleSwitch checked={checked} onChange={change} name="checkedA" />}
-                                label={type === 'options' ? 'PE' : type == 'Futures' ? 'Options' : type == "BUY/SELL" ? "Sell" : type == "LONG/SHORT" ? "Short" : null}
-                                style={{ marginLeft: '-8px', color: 'rgba(0, 0, 0, 0.54)' }}
-                            />
+                            type == 'Trailing' ?
+                                <FormControlLabel
+                                    control={<TrailSwitch checked={checked} onChange={change} name="checkedA" />}
+                                    label={type == 'Trailing' ? 'Trailing' : null}
+                                    style={{ marginLeft: '-8px', color: settings?.themeMode == 'dark' ? 'white' : 'rgba(0, 0, 0, 0.54)' }}
+                                />
+                                :
+                                <FormControlLabel
+                                    control={<PurpleSwitch checked={checked} onChange={change} name="checkedA" />}
+                                    label={type === 'options' ? 'PE' : type == 'Futures' ? 'Options' : type == "BUY/SELL" ? "Sell" : type == "LONG/SHORT" ? "Short" : null}
+                                    style={{ marginLeft: '-8px', color: settings?.themeMode == 'dark' ? 'white' : 'rgba(0, 0, 0, 0.54)' }}
+                                />
                         }
 
                     </Grid>

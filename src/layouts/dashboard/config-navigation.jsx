@@ -63,6 +63,12 @@ export function useNavData() {
             icon: ICONS.dashboard,
           },
           {
+            title: t('Place orders'),
+            path: paths.dashboard.placeOrders,
+            icon: ICONS.banking,
+            roles: ['user']
+          },
+          {
             title: t('set'),
             path: paths.dashboard.set,
             icon: ICONS.folder,

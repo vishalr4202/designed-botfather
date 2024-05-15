@@ -64,6 +64,8 @@ const PermissionDeniedPage = lazy(() => import('src/pages/dashboard/permission')
 // BLANK PAGE
 const BlankPage = lazy(() => import('src/pages/dashboard/blank'));
 
+const UserOrder = lazy(() => import('src/pages/dashboard/userPlaceOrder'));
+
 import PrivateRoute from 'src/routes/sections/PrivateRoute'
 
 // ----------------------------------------------------------------------
@@ -98,6 +100,8 @@ export const dashboardRoutes = [
         ],
       },
       { path: 'user', element: <PrivateRoute element={<UserListPage />} /> },
+      { path: 'new', element: <UserCreatePage /> },
+      { path: 'placeorders', element: <UserOrder /> },
       // {
       //   path: 'user',
       //   children: [

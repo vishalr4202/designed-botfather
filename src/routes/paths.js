@@ -101,6 +101,8 @@ export const paths = {
     root: ROOTS.DASHBOARD,
     set:`${ROOTS.DASHBOARD}/set`,
     setdetails: (id) => `${ROOTS.DASHBOARD}/set/${id}`,
+    placeOrders:`${ROOTS.DASHBOARD}/placeorders`,
+    new: `${ROOTS.DASHBOARD}/new`,
     mail: `${ROOTS.DASHBOARD}/mail`,
     chat: `${ROOTS.DASHBOARD}/chat`,
     blank: `${ROOTS.DASHBOARD}/blank`,

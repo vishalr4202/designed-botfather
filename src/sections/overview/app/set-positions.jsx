@@ -70,6 +70,12 @@ const TABLE_HEAD = [
     { id: 'Close', label: 'Close', width: 88 },
     // { id: 'Action', label: 'Close', alignRight: false }
 ];
+const NON_ADMIN_TABLE_HEAD = [
+    { id: 'tradingSymbol', label: 'Symbol', alignRight: false },
+    { id: 'netQuantity', label: 'Buy Quantity', alignRight: false },
+    { id: 'netAveragePrice', label: 'Entry Price', alignRight: false },
+    { id: 'unrealizedMTOM', label: 'P&L', alignRight: false },
+]
 const defaultFilters = {
     name: '',
     role: [],
@@ -78,7 +84,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function SetPositionsView({ data }) {
+export default function SetPositionsView({ data, admin }) {
     const { enqueueSnackbar } = useSnackbar();
 
     const table = useTable();
@@ -242,7 +248,7 @@ export default function SetPositionsView({ data }) {
                                     selectable={false}
                                     order={table.order}
                                     orderBy={table.orderBy}
-                                    headLabel={TABLE_HEAD}
+                                    headLabel={admin ? TABLE_HEAD : NON_ADMIN_TABLE_HEAD}
                                     rowCount={dataFiltered.length}
                                     numSelected={table.selected.length}
                                     onSort={table.onSort}
@@ -276,7 +282,7 @@ export default function SetPositionsView({ data }) {
                                             //     onEditRow={() => handleEditRow(row.email)}
                                             // />
                                             <DynamicTableRow
-                                                headers={TABLE_HEAD}
+                                                headers={admin ? TABLE_HEAD : NON_ADMIN_TABLE_HEAD}
                                                 type="close"
                                                 selectable={false}
                                                 key={row.email}

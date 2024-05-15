@@ -87,7 +87,7 @@ export default function DynamicTableRow({ row, selected, onEditRow, onSelectRow,
                 {headers?.map((ele) => {
                     if (ele?.id == 'Close') {
                         return <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap', zIndex: 100 }}>
-                            <Button color="error" variant="outlined" onClick={() => clickedClose(row)}>Close</Button>
+                            <Button color={row[ele?.unrealizedMTOM] > 0 ? "success" : "error"} variant="outlined" onClick={() => clickedClose(row)}>Close</Button>
                         </TableCell>
                     }
                     return (

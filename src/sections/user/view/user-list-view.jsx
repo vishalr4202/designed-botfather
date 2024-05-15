@@ -202,7 +202,7 @@ export default function UserListView({ selectable }) {
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.user.new}
+              href={paths.dashboard.new}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >

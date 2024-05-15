@@ -1,34 +1,24 @@
-import { useTheme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
+import { useEffect, useState } from 'react'
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useEffect, useState } from 'react'
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import FS_Instruments from 'src/utils/FSInstruments/fsInstruments.json';
 import { useSettingsContext } from 'src/components/settings';
 import { createStructuredSelector } from 'reselect';
 import { useDispatch, useSelector } from 'react-redux';
 import { executeACGAction, updateScreenIdentifiers } from 'src/store/slice';
 import { acgSelector } from 'src/store/selector';
 import { ACTION_CODES, STORE_KEYS } from 'src/constants/apiConstants';
-import { useRouter, useSearchParams, useParams } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
-import Stack from '@mui/material/Stack';
-import AppWidget from '../app-widget';
-// import OrderDetailsToolbar from 'src/sections/order/order-details-toolbar';
-import SetToolbar from './SetToolbar';
 import Chart from 'src/components/fs_charts/FsChart';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-// import AutocompleteView from 'src/sections/_examples/mui/autocomplete-view';
-import Autocomplete from '@mui/material/Autocomplete';
-import Autocompletes from 'src/components/Autocomplete/Autocomplete';
-import TextField from '@mui/material/TextField';
-import FS_Instruments from 'src/utils/FSInstruments/fsInstruments.json';
+import SetPositions from 'src/sections/overview/app/set-positions';
 import Switches from 'src/components/Switch/Switch';
+import Autocompletes from 'src/components/Autocomplete/Autocomplete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import SetPositions from '../set-positions';
-import './manageset.css'
+import 'src/sections/overview/app/ManageSet/manageset.css';
 import Chip from 'src/components/Chip/Chip'
 import ShortStraddle from 'src/components/ShortStraddle/ShortStraddle';
 import ShortStrangle from 'src/components/ShortStrangle/ShortStrangle';
@@ -36,38 +26,32 @@ import LongStraddle from 'src/components/LongStraddle/LongStraddle';
 import LongStrangle from 'src/components/LongStrangle/LongStrangle';
 import BullSpread from 'src/components/BullSpread/BullSpread';
 import BearSpread from 'src/components/BearSpread/BearSpread';
-export default function ManageSet(props) {
-    const router = useRouter();
-    const params = useParams()
-    const location = useLocation();
+
+export default function UserPlaceOrder(props) {
+    const settings = useSettingsContext();
     const dispatch = useDispatch();
     const acgStateSelector = createStructuredSelector({
         acgSlice: acgSelector()
     });
     const { acgSlice: state } = useSelector(acgStateSelector);
-    const settings = useSettingsContext();
-    const navigate = useNavigate();
     const [chartToken, setChartToken] = useState('86145')
     const [selectedChartSymbol, setSelectedChartSymbol] = useState('')
     const [quickLots, setQuickLots] = useState('')
-    const [isStrategy, setIsStrategy] = useState(false);
-    const [nonPrimaryDetials, setNonPrimaryDetails] = useState('')
+
     useEffect(() => {
-        if (!location.state?.params) {
-            navigate(paths.dashboard.set)
-        } else {
+        if (state?.fsGetUserKeys?.message == undefined) {
             dispatch(
                 executeACGAction({
                     payload: {
-                        requestType: 'POST',
-                        urlPath: ACTION_CODES.SET_PRIMARY_USER_DETAIL,
-                        reqObj: { primary: location?.state?.params?.primary }
+                        requestType: 'GET',
+                        urlPath: ACTION_CODES.FS_GET_USERKEYS
                     },
-                    storeKey: STORE_KEYS.SET_PRIMARY_USER_DETAIL
+                    storeKey: STORE_KEYS.FS_GET_USERKEYS
                 })
             );
         }
-    }, [location])
+    }, [])
+
     const setToken = (e) => {
         // const Instrtoken = FS_Instruments.filter((ele) => ele?.TradingSymbol == e.target.innerText)
         // setSelectedChartSymbol(e.target.innerText)
@@ -76,90 +60,48 @@ export default function ManageSet(props) {
         setSelectedChartSymbol(Instrtoken[0]?.TradingSymbol)
         setChartToken(Instrtoken[0]?.Token)
         setQuickLots('')
-        setTrailPrice('')
-    }
-    const changeQuickLots = (e) => {
-        console.log(selectedChartSymbol, 'selecSymb');
-        // let x = 0
-        // if (selectedChartSymbol != '' && selectedChartSymbol.includes('NIFTY')) {
-        //     x = e.target.value <= 1800 ? e.target.value : 1800
-        // }
-        // if (selectedChartSymbol != '' && selectedChartSymbol.includes('FINNIFTY')) {
-        //     x = e.target.value <= 1800 ? e.target.value : 1800
-        // }
-        // if (selectedChartSymbol == '' || selectedChartSymbol.includes('BANKNIFTY')) {
-        //     x = e.target.value <= 900 ? e.target.value : 900
-        // }
-        let x = e.target.value
-        setQuickLots(x.toString())
-    }
-    const quickBuySubmit = () => {
-        const newData = {
-            exchange: "NFO",
-            tradingsymbol: selectedChartSymbol,
-            quantity: quickLots,
-            name: params?.id
-        }
-        console.log(trail, "trails")
-        if (trail) {
-            dispatch(
-                executeACGAction({
-                    payload: {
-                        requestType: 'POST',
-                        urlPath: ACTION_CODES.PLACE_TRAILING_ORDER,
-                        reqObj: { ...newData, trailPrice: trailPrice },
-                    },
-                    storeKey: STORE_KEYS.PLACE_TRAILING_ORDER,
-                    uniqueScreenIdentifier: {
-                        tradeRecd: true
-                    }
-                })
-            )
-            setTrailPrice('')
-            setTrail(false)
-            setQuickLots('')
-        }
-        else {
-            dispatch(
-                executeACGAction({
-                    payload: {
-                        requestType: 'POST',
-                        urlPath: ACTION_CODES.PLACE_SET_ORDER,
-                        reqObj: newData
-                    },
-                    storeKey: STORE_KEYS.PLACE_SET_ORDER,
-                    uniqueScreenIdentifier: {
-                        tradeRecd: true
-                    }
-                })
-            )
-        }
     }
 
-    const quickSellSubmit = () => {
-        const newData = {
-            exchange: "NFO",
-            tradingsymbol: selectedChartSymbol,
-            quantity: quickLots,
-            name: params?.id
+    const changeQuickLots = (e) => {
+        console.log(selectedChartSymbol, 'selecSymb');
+        let x = 0
+        if (selectedChartSymbol != '' && selectedChartSymbol.includes('NIFTY')) {
+            x = e.target.value <= 1800 ? e.target.value : 1800
         }
+        if (selectedChartSymbol != '' && selectedChartSymbol.includes('FINNIFTY')) {
+            x = e.target.value <= 1800 ? Math.ceil(e.target.value / 45) : 1800
+        }
+        if (selectedChartSymbol == '' || selectedChartSymbol.includes('BANKNIFTY')) {
+            x = e.target.value <= 900 ? e.target.value : 900
+        }
+        setQuickLots(x.toString())
+    }
+
+    const getPositions = () => {
         dispatch(
             executeACGAction({
                 payload: {
-                    requestType: 'POST',
-                    urlPath: ACTION_CODES.EXIT_SET_ORDER,
-                    reqObj: newData
+                    requestType: 'GET',
+                    urlPath: ACTION_CODES.FS_USER_POSITIONS,
                 },
-                storeKey: STORE_KEYS.EXIT_SET_ORDER,
-                uniqueScreenIdentifier: {
-                    tradeRecd: true
-                }
+                storeKey: STORE_KEYS.FS_USER_POSITION,
+                // uniqueScreenIdentifier: {
+                //     apiKeyRecd: true
+                // }
             })
-        )
-    }
+        );
+    };
 
-    // Lower place Orders
-    // const [isStrategy, setIsStrategy] = useState(false);
+    useEffect(() => {
+        const x = setInterval(() => {
+            getPositions()
+        }, 2000)
+        return () => {
+            clearInterval(x)
+        }
+    }, [])
+
+    const [isStrategy, setIsStrategy] = useState(false);
     const [multiLegged, setMultiLegged] = useState([{ derivative: false, optionType: false, instruments: FS_Instruments.filter((ele) => ele?.OptionType == "XX").map((ele) => ele?.TradingSymbol), selectedInstrument: "", selectedLots: [], orderType: '', BuyorSell: false, limitPrice: '', lotSize: [] }])
     const [instr, setInstr] = useState([FS_Instruments.filter((ele) => ele?.OptionType == "XX").map((ele) => ele?.CompanyName)])
     const [lots, setLots] = useState([[]]);
@@ -293,6 +235,7 @@ export default function ManageSet(props) {
             setSingleOrder(true)
         }
     }
+
     const submitOrder = () => {
         const newData = [...multiLegged].map((ele) => {
             let quantMultiple = 50;
@@ -315,7 +258,6 @@ export default function ManageSet(props) {
                 retention: "IOC",
                 triggerPrice: "0",
                 remarks: "Test1",
-                name: params?.id
             }
         })
 
@@ -327,10 +269,10 @@ export default function ManageSet(props) {
                 executeACGAction({
                     payload: {
                         requestType: 'POST',
-                        urlPath: ACTION_CODES.PLACE_SET_ORDER,
+                        urlPath: ACTION_CODES.FS_PLACE_SINGLE_ORDER,
                         reqObj: newData[0]
                     },
-                    storeKey: STORE_KEYS.PLACE_SET_ORDER,
+                    storeKey: STORE_KEYS.FS_PLACE_SINGLE_ORDER,
                     uniqueScreenIdentifier: {
                         tradeRecd: true
                     }
@@ -373,17 +315,16 @@ export default function ManageSet(props) {
                     retention: "IOC",
                     triggerPrice: "0",
                     remarks: "Test1",
-                    name: params?.id
                 }
             })
             dispatch(
                 executeACGAction({
                     payload: {
                         requestType: 'POST',
-                        urlPath: ACTION_CODES.SET_MULTI_ORDERS,
+                        urlPath: ACTION_CODES.FS_PLACE_MULTIPLE_ORDER,
                         reqObj: newData
                     },
-                    storeKey: STORE_KEYS.SET_MULTI_ORDERS,
+                    storeKey: STORE_KEYS.FS_PLACE_MULTIPLE_ORDER,
                     uniqueScreenIdentifier: {
                         tradeRecd: true
                     }
@@ -397,60 +338,6 @@ export default function ManageSet(props) {
         setMultiLegged([{ derivative: false, optionType: false, instruments: FS_Instruments.filter((ele) => ele?.OptionType == "XX").map((ele) => ele?.CompanyName), selectedInstrument: "", selectedLots: "", orderType: '', BuyorSell: false, limitPrice: '', lotSize: [] }])
     }
 
-    const getPrimarySetPositions = () => {
-        // if (props?.location?.state?.params?.primary) {
-
-        // }
-        dispatch(
-            executeACGAction({
-                payload: {
-                    requestType: 'POST',
-                    urlPath: ACTION_CODES.PRIMARY_SET_POSITION,
-                    reqObj: { email: location?.state?.params?.primary }
-                },
-                storeKey: STORE_KEYS.PRIMARY_SET_POSITION,
-                uniqueScreenIdentifier: {
-                    setUserPos: true
-                }
-            })
-        );
-    };
-
-    const getNonPrimarySetPositions = () => {
-        // if (props?.location?.state?.params?.primary) {
-
-        // }
-        dispatch(
-            executeACGAction({
-                payload: {
-                    requestType: 'POST',
-                    urlPath: ACTION_CODES.NON_PRIMARY_SET_POSITION,
-                    reqObj: { email: nonPrimaryDetials }
-                },
-                storeKey: STORE_KEYS.NON_PRIMARY_SET_POSITION,
-                uniqueScreenIdentifier: {
-                    setUserPos: true
-                }
-            })
-        );
-    };
-
-    useEffect(() => {
-        if (nonPrimaryDetials !== '') {
-            console.log(nonPrimaryDetials, "sdASDV")
-            getNonPrimarySetPositions()
-        }
-    }, [nonPrimaryDetials])
-
-    useEffect(() => {
-        const x = setInterval(() => {
-            getPrimarySetPositions()
-        }, 2000)
-        return () => {
-            clearInterval(x)
-        }
-    }, [])
-
     //  Straddle Strangle Strategies Logic
     const [selectedStrategy, setSelectedStrategy] = useState(0)
     const handleClickChip = (chipToDelete) => {
@@ -458,10 +345,9 @@ export default function ManageSet(props) {
         setSelectedStrategy(chipToDelete?.key)
     };
 
-
     const placeStrategy = (e, type) => {
         console.log(e, "ashj")
-        const newObj = { ...e, name: params?.id }
+        const newObj = { ...e }
         if (type == "shortStraddle") {
             placeShortStraddle(newObj)
         }
@@ -481,30 +367,32 @@ export default function ManageSet(props) {
             placeBearSpread(newObj)
         }
     }
+
     const placeShortStraddle = (e) => {
         dispatch(
             executeACGAction({
                 payload: {
                     requestType: 'POST',
-                    urlPath: ACTION_CODES.SET_SHORT_STRADDLE,
+                    urlPath: ACTION_CODES.FS_SHORT_STRADDLE,
                     reqObj: e
                 },
-                storeKey: STORE_KEYS.SET_SHORT_STRADDLE,
+                storeKey: STORE_KEYS.FS_SHORT_STRADDLE,
                 uniqueScreenIdentifier: {
                     setStraddle: true
                 }
             })
         );
     };
+
     const placeShortStrangle = (e) => {
         dispatch(
             executeACGAction({
                 payload: {
                     requestType: 'POST',
-                    urlPath: ACTION_CODES.SET_SHORT_STRANGLE,
+                    urlPath: ACTION_CODES.FS_SHORT_STRANGLE,
                     reqObj: e
                 },
-                storeKey: STORE_KEYS.SET_SHORT_STRANGLE,
+                storeKey: STORE_KEYS.FS_SHORT_STRANGLE,
                 // uniqueScreenIdentifier: {
                 //     apiKeyRecd: true
                 // }
@@ -516,10 +404,10 @@ export default function ManageSet(props) {
             executeACGAction({
                 payload: {
                     requestType: 'POST',
-                    urlPath: ACTION_CODES.SET_LONG_STRADDLE,
+                    urlPath: ACTION_CODES.FS_LONG_STRADDLE,
                     reqObj: e
                 },
-                storeKey: STORE_KEYS.SET_LONG_STRADDLE,
+                storeKey: STORE_KEYS.FS_LONG_STRADDLE,
                 // uniqueScreenIdentifier: {
                 //     apiKeyRecd: true
                 // }
@@ -531,25 +419,26 @@ export default function ManageSet(props) {
             executeACGAction({
                 payload: {
                     requestType: 'POST',
-                    urlPath: ACTION_CODES.SET_LONG_STRANGLE,
+                    urlPath: ACTION_CODES.FS_LONG_STRANGLE,
                     reqObj: e
                 },
-                storeKey: STORE_KEYS.SET_LONG_STRANGLE,
+                storeKey: STORE_KEYS.FS_LONG_STRANGLE,
                 // uniqueScreenIdentifier: {
                 //     apiKeyRecd: true
                 // }
             })
         );
     };
+
     const placeBullSpread = (e) => {
         dispatch(
             executeACGAction({
                 payload: {
                     requestType: 'POST',
-                    urlPath: ACTION_CODES.SET_BULL_CALL,
+                    urlPath: ACTION_CODES.FS_BULL_SPREAD,
                     reqObj: e
                 },
-                storeKey: STORE_KEYS.SET_BULL_CALL,
+                storeKey: STORE_KEYS.FS_BULL_SPREAD,
                 // uniqueScreenIdentifier: {
                 //     apiKeyRecd: true
                 // }
@@ -561,10 +450,10 @@ export default function ManageSet(props) {
             executeACGAction({
                 payload: {
                     requestType: 'POST',
-                    urlPath: ACTION_CODES.SET_BEAR_PUT,
+                    urlPath: ACTION_CODES.FS_BEAR_SPREAD,
                     reqObj: e
                 },
-                storeKey: STORE_KEYS.SET_BEAR_PUT,
+                storeKey: STORE_KEYS.FS_BEAR_SPREAD,
                 // uniqueScreenIdentifier: {
                 //     apiKeyRecd: true
                 // }
@@ -572,30 +461,16 @@ export default function ManageSet(props) {
         );
     };
 
-    // Trail Stop Loss State
-    const [trail, setTrail] = useState(false)
-    const changeTrailValues = (e) => {
-        if (!trail) {
-            setTrailPrice('')
-        }
-        setTrail(!trail)
-    }
-    const [trailPrice, setTrailPrice] = useState('')
-    const changeTrail = (e) => {
-        setTrailPrice(e.target.value)
-    }
-    // console.log(location.state.params.email, "locProps")
     return (
         <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-            <SetToolbar
+            {/* <SetToolbar
                 backLink={paths.dashboard.set}
                 orderNumber={params?.id}
-            />
+            /> */}
             <Grid container spacing={3}>
-                <Grid xs={12} md={5}>
+                <Grid xs={12} md={8}>
                     <Autocomplete
                         fullWidth
-                        id="combo-box-demo"
                         options={FS_Instruments}
                         getOptionLabel={(option) => option.CompanyName}
                         renderInput={(params) => <TextField {...params} label="Instruments" margin="none" />}
@@ -607,27 +482,16 @@ export default function ManageSet(props) {
                         onChange={(e) => setToken(e)}
                     />
                 </Grid>
-                <Grid xs={12} md={3}>
+                <Grid xs={12} md={4}>
                     <TextField label={"Quantity"} variant="outlined" onChange={(e) => changeQuickLots(e)} type="number" value={quickLots} style={{ width: '100%' }} />
                 </Grid>
-                <Grid xs={12} md={2}>
-                    <div style={{ marginTop: '5px' }}>
-                        <Switches type="Trailing" change={(e) => changeTrailValues(e)} checked={trail} />
-                    </div>
-                </Grid>
-                {trail ?
-                    <Grid xs={12} md={2}>
-                        <TextField label={"Trail Price"} variant="outlined" onChange={(e) => changeTrail(e)} type="number" value={trailPrice} style={{ width: '100%' }} />
-                    </Grid>
-                    : null}
-
             </Grid>
             <div style={{ display: 'flex', gap: '7%', marginLeft: '1%', position: 'absolute', zIndex: '3', marginTop: '1.3%' }}>
                 <Button
                     color="success"
                     variant="contained"
-                    onClick={quickBuySubmit}
-                    disabled={selectedChartSymbol !== '' && selectedChartSymbol != undefined && quickLots !== '' && !trail ? false : selectedChartSymbol !== '' && selectedChartSymbol != undefined && quickLots !== '' && trail && trailPrice !== '' ? false : true}
+                    onClick={() => { }}
+                    disabled={selectedChartSymbol !== '' && selectedChartSymbol != undefined && quickLots !== '' ? false : true}
                 >
                     Buy
                 </Button>
@@ -635,12 +499,13 @@ export default function ManageSet(props) {
                     type="submit"
                     variant="contained"
                     color="error"
-                    onClick={quickSellSubmit}
-                    disabled={selectedChartSymbol !== '' && selectedChartSymbol != undefined && quickLots !== '' && !trail ? false : true}
+                    onClick={() => { }}
+                    disabled={selectedChartSymbol !== '' && selectedChartSymbol != undefined && quickLots !== '' ? false : true}
                 >
-                    Sell</Button>
+                    Sell
+                </Button>
             </div>
-            {state.primaryUserDetail?.message ? <Chart symbol={chartToken == undefined ? '86145' : chartToken} fsGetUserKeys={state?.primaryUserDetail?.message} theme={settings?.themeMode} layout={settings.themeLayout} width="100%" /> : null}
+            {state?.fsGetUserKeys?.message ? <Chart symbol={chartToken == undefined ? '26000' : chartToken} fsGetUserKeys={state?.fsGetUserKeys?.message} /> : null}
 
             <Card style={{ padding: '15px', overflow: 'visible', marginTop: '10px', marginBottom: '-8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: '0px', marginLeft: '7px' }}>
@@ -651,6 +516,7 @@ export default function ManageSet(props) {
                         <Switches type="strategies" change={() => setIsStrategy(!isStrategy)} checked={isStrategy} />
                     </div>
                 </div>
+
                 {!isStrategy ?
                     <div>
                         {multiLegged?.map((ele, index) => {
@@ -685,7 +551,7 @@ export default function ManageSet(props) {
                                                 color="success"
                                                 variant="contained"
                                                 secondary={false}
-                                                onClick={submitOrder}
+                                            // onClick={submitOrder}
                                             >
                                                 Place Order
                                             </Button>
@@ -723,26 +589,10 @@ export default function ManageSet(props) {
                     </div>
                 }
             </Card>
-            {/* <br /> */}
+
             <div style={{ marginTop: '18px', marginBottom: '10px' }}>
-                <SetPositions data={state?.primarySetPositions?.message?.data?.filter((ele) => Math.abs(Number(ele?.netQuantity)) != 0)} type="positions" admin={true} />
-            </div>
-            {/* <br /> */}
-            <Autocomplete
-                fullWidth
-                options={location?.state?.params?.email.filter((ele) => ele !== location?.state?.params?.primary)}
-                getOptionLabel={(option) => option}
-                renderInput={(params) => <TextField {...params} label="Non Primary Users" margin="none" />}
-                renderOption={(props, option) => (
-                    <li {...props} key={option}>
-                        {option}
-                    </li>
-                )}
-                onChange={(e) => setNonPrimaryDetails(e.target.innerText)}
-            />
-            <div style={{ marginTop: '10px' }}>
-                <SetPositions data={state?.NonPrimarySetPositions?.message?.data?.filter((ele) => Math.abs(Number(ele?.netQuantity)) != 0)} type="positions" admin={false} />
+                <SetPositions data={state?.fspositions?.message?.data?.filter((ele) => Math.abs(Number(ele?.netQuantity)) != 0)} type="positions" admin={true} />
             </div>
         </Container>
-    );
+    )
 }
