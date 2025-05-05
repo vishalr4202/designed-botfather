@@ -25,7 +25,7 @@ import { ACTION_CODES, STORE_KEYS } from 'src/constants/apiConstants';
 
 // ----------------------------------------------------------------------
 
-export default function DynamicTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, index, selectable, type, headers }) {
+export default function DynamicTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow, index, selectable, type, headers, isAdmin, isUser }) {
     const { name, avatarUrl, company, role, status, email, phoneNumber, updated } = row;
 
     const confirm = useBoolean();
@@ -47,19 +47,22 @@ export default function DynamicTableRow({ row, selected, onEditRow, onSelectRow,
             }
         })
         console.log(newData[0])
-        dispatch(
-            executeACGAction({
-                payload: {
-                    requestType: 'POST',
-                    urlPath: ACTION_CODES.EXIT_SET_ORDER,
-                    reqObj: newData[0]
-                },
-                storeKey: STORE_KEYS.EXIT_SET_ORDER,
-                uniqueScreenIdentifier: {
-                    tradeRecd: true
-                }
-            })
-        )
+        if (isAdmin) {
+            dispatch(
+                executeACGAction({
+                    payload: {
+                        requestType: 'POST',
+                        urlPath: ACTION_CODES.EXIT_SET_ORDER,
+                        reqObj: newData[0]
+                    },
+                    storeKey: STORE_KEYS.EXIT_SET_ORDER,
+                    uniqueScreenIdentifier: {
+                        tradeRecd: true
+                    }
+                })
+            )
+        }
+
         // window.location.reload();
     }
     return (
@@ -87,7 +90,7 @@ export default function DynamicTableRow({ row, selected, onEditRow, onSelectRow,
                 {headers?.map((ele) => {
                     if (ele?.id == 'Close') {
                         return <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap', zIndex: 100 }}>
-                            <Button color={row[ele?.unrealizedMTOM] > 0 ? "success" : "error"} variant="outlined" onClick={() => clickedClose(row)}>Close</Button>
+                            <Button color={row?.unrealizedMTOM > 0 ? "success" : "error"} variant="outlined" onClick={() => clickedClose(row)}>Close</Button>
                         </TableCell>
                     }
                     return (

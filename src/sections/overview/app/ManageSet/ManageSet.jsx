@@ -47,7 +47,7 @@ export default function ManageSet(props) {
     const { acgSlice: state } = useSelector(acgStateSelector);
     const settings = useSettingsContext();
     const navigate = useNavigate();
-    const [chartToken, setChartToken] = useState('86145')
+    const [chartToken, setChartToken] = useState('26000')
     const [selectedChartSymbol, setSelectedChartSymbol] = useState('')
     const [quickLots, setQuickLots] = useState('')
     const [isStrategy, setIsStrategy] = useState(false);
@@ -295,12 +295,15 @@ export default function ManageSet(props) {
     }
     const submitOrder = () => {
         const newData = [...multiLegged].map((ele) => {
-            let quantMultiple = 50;
+            // was 50
+            let quantMultiple = 75;
             if (ele?.selectedInstrument.includes('BANKNIFTY')) {
-                quantMultiple = 15
+                // was 15
+                quantMultiple = 30
             }
             if (ele?.selectedInstrument.includes('FINNIFTY')) {
-                quantMultiple = 40
+                // was 40
+                quantMultiple = 65
             }
             const symbol = FS_Instruments.filter((elem) => elem?.CompanyName == ele?.selectedInstrument)[0]?.TradingSymbol
             return {
@@ -353,12 +356,12 @@ export default function ManageSet(props) {
         else if (!singleOrder) {
 
             const newData = [...multiLegged].map((ele, index) => {
-                let quantMultiple = 50;
+                let quantMultiple = 75;
                 if (ele?.selectedInstrument.includes('BANKNIFTY')) {
-                    quantMultiple = 15
+                    quantMultiple = 30
                 }
                 if (ele?.selectedInstrument.includes('FINNIFTY')) {
-                    quantMultiple = 40
+                    quantMultiple = 65
                 }
                 const symbol = FS_Instruments.filter((elem) => elem?.CompanyName == ele?.selectedInstrument)[0]?.TradingSymbol
                 return {

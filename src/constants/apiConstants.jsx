@@ -1,5 +1,5 @@
-export const BASEURL = 'https://13.235.150.170:443/';
-// export const BASEURL = 'http://localhost:8001/';
+// export const BASEURL = 'https://13.235.150.170:443/';
+export const BASEURL = 'http://localhost:8001/';
 // export const BASEURL = 'https://7d30-106-51-173-126.ngrok-free.app/';
 
 export const ACTION_CODES = {

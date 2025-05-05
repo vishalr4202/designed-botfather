@@ -84,7 +84,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function SetPositionsView({ data, admin }) {
+export default function SetPositionsView({ data, admin, user }) {
     const { enqueueSnackbar } = useSnackbar();
 
     const table = useTable();
@@ -248,7 +248,7 @@ export default function SetPositionsView({ data, admin }) {
                                     selectable={false}
                                     order={table.order}
                                     orderBy={table.orderBy}
-                                    headLabel={admin ? TABLE_HEAD : NON_ADMIN_TABLE_HEAD}
+                                    headLabel={admin || user ? TABLE_HEAD : NON_ADMIN_TABLE_HEAD}
                                     rowCount={dataFiltered.length}
                                     numSelected={table.selected.length}
                                     onSort={table.onSort}
@@ -282,7 +282,9 @@ export default function SetPositionsView({ data, admin }) {
                                             //     onEditRow={() => handleEditRow(row.email)}
                                             // />
                                             <DynamicTableRow
-                                                headers={admin ? TABLE_HEAD : NON_ADMIN_TABLE_HEAD}
+                                                headers={admin || user ? TABLE_HEAD : NON_ADMIN_TABLE_HEAD}
+                                                isAdmin={admin}
+                                                isUser={user}
                                                 type="close"
                                                 selectable={false}
                                                 key={row.email}

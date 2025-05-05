@@ -106,14 +106,14 @@ export default function AppWidgetSummary({ title, percent, total, chart, sx, set
       {setView ?
         <Box sx={{ flexGrow: 1 }}>
           <Stack direction="row" alignItems="center" justifyContent="start" sx={{ gap: '45%' }}>
-            <Typography component="div" variant="h6">
-              Name: {title}
+            <Typography component="div" variant="h6" style={{ fontSize: '14px' }}>
+              Name: {' ' + title}
             </Typography>
-            <Typography component="div" variant="subtitle2">
-              {users} Users
+            <Typography component="div" variant="subtitle2" style={{ fontSize: '10px' }}>
+              {users + ' '}Users
             </Typography>
           </Stack>
-          <Typography component="div" variant="subtitle1">Primary: {primary}</Typography>
+          <Typography component="div" variant="subtitle1" style={{ fontSize: '12px', marginTop: '4px' }}>Primary: {' ' + primary}</Typography>
 
           <Stack direction="row" alignItems="center" sx={{ mt: 2, mb: 1, gap: '15px' }}>
             <Button variant="contained" color="primary" onClick={view}>

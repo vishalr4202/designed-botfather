@@ -238,12 +238,12 @@ export default function UserPlaceOrder(props) {
 
     const submitOrder = () => {
         const newData = [...multiLegged].map((ele) => {
-            let quantMultiple = 50;
+            let quantMultiple = 75;
             if (ele?.selectedInstrument.includes('BANKNIFTY')) {
-                quantMultiple = 15
+                quantMultiple = 30
             }
             if (ele?.selectedInstrument.includes('FINNIFTY')) {
-                quantMultiple = 40
+                quantMultiple = 65
             }
             const symbol = FS_Instruments.filter((elem) => elem?.CompanyName == ele?.selectedInstrument)[0]?.TradingSymbol
             return {
@@ -253,7 +253,7 @@ export default function UserPlaceOrder(props) {
                 quantity: String(Number(ele?.selectedLots) * quantMultiple),
                 price: "0",
                 product: "M",
-                transactionType: !ele?.derivative && ele?.BuyorSell ? 'S' : !ele?.derivative && !ele?.BuyorSell ? 'B' : ele?.derivative && !ele?.BuyorSell ? 'B' : 'S',
+                transaction_type: !ele?.derivative && ele?.BuyorSell ? 'S' : !ele?.derivative && !ele?.BuyorSell ? 'B' : ele?.derivative && !ele?.BuyorSell ? 'B' : 'S',
                 priceType: ele?.orderType == 'Market' ? 'MKT' : "LMT",
                 retention: "IOC",
                 triggerPrice: "0",
@@ -265,6 +265,7 @@ export default function UserPlaceOrder(props) {
         console.log(newData, "new")
         console.log(multiLegged, "legs")
         if (singleOrder) {
+            alert('in')
             dispatch(
                 executeACGAction({
                     payload: {
@@ -295,12 +296,12 @@ export default function UserPlaceOrder(props) {
         else if (!singleOrder) {
 
             const newData = [...multiLegged].map((ele, index) => {
-                let quantMultiple = 50;
+                let quantMultiple = 75;
                 if (ele?.selectedInstrument.includes('BANKNIFTY')) {
-                    quantMultiple = 15
+                    quantMultiple = 30
                 }
                 if (ele?.selectedInstrument.includes('FINNIFTY')) {
-                    quantMultiple = 40
+                    quantMultiple = 65
                 }
                 const symbol = FS_Instruments.filter((elem) => elem?.CompanyName == ele?.selectedInstrument)[0]?.TradingSymbol
                 return {
@@ -551,7 +552,7 @@ export default function UserPlaceOrder(props) {
                                                 color="success"
                                                 variant="contained"
                                                 secondary={false}
-                                            // onClick={submitOrder}
+                                                onClick={submitOrder}
                                             >
                                                 Place Order
                                             </Button>
@@ -591,7 +592,7 @@ export default function UserPlaceOrder(props) {
             </Card>
 
             <div style={{ marginTop: '18px', marginBottom: '10px' }}>
-                <SetPositions data={state?.fspositions?.message?.data?.filter((ele) => Math.abs(Number(ele?.netQuantity)) != 0)} type="positions" admin={true} />
+                <SetPositions data={state?.fspositions?.message?.data?.filter((ele) => Math.abs(Number(ele?.netQuantity)) != 0)} type="positions" user={true} />
             </div>
         </Container>
     )
